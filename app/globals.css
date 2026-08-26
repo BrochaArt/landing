@@ -1,26 +1,55 @@
 @import "tailwindcss";
 
+/* Tokens del Figma (variables reales del archivo BROCHA-page) */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --brocha-violet: #7454e8;   /* Color 3 */
+  --brocha-deep: #371d90;     /* Color 4 */
+  --brocha-yellow: #fdff84;   /* Color 2 */
+  --brocha-ink: #303030;
+  --brocha-panel: #f8f8f8;
+  --brocha-lav: #e5dbfd;
+  --brocha-lav-soft: #f0ecfd;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-brocha-violet: var(--brocha-violet);
+  --color-brocha-deep: var(--brocha-deep);
+  --color-brocha-yellow: var(--brocha-yellow);
+  --color-brocha-ink: var(--brocha-ink);
+  --color-brocha-panel: var(--brocha-panel);
+  --color-brocha-lav: var(--brocha-lav);
+  --color-brocha-lav-soft: var(--brocha-lav-soft);
+
+  --font-sans: var(--font-montserrat), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-syne), var(--font-montserrat), sans-serif;
+  --font-nav: var(--font-lexend), var(--font-montserrat), sans-serif;
+
+  --radius-card: 20px;
+  --radius-panel: 15px;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
+  /* clip (no hidden): recorta el desborde lateral sin convertir a <body> en
+     contenedor de scroll, que rompería scrollY y el scroll suave. */
+  overflow-x: clip;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: #ffffff;
+  color: var(--brocha-ink);
+  font-family: var(--font-montserrat), ui-sans-serif, system-ui, sans-serif;
+}
+
+/* El header es fijo: compensa el salto al navegar por anclas */
+[id] {
+  scroll-margin-top: 110px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }
