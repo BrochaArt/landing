@@ -29,6 +29,13 @@ create policy "landing puede suscribir"
   with check (true);
 
 -- En Supabase, una tabla creada por SQL no queda expuesta a la Data API por sí
--- sola: hay que otorgar el permiso al rol explícitamente. Solo INSERT.
-grant usage  on schema public       to anon;
-grant insert on public.subscribers  to anon;
+-- sola: hay que otorgar el permiso al rol explícitamente.
+--
+-- Se revoca todo primero a propósito: Supabase concede por defecto SELECT,
+-- UPDATE y DELETE a anon/authenticated sobre las tablas nuevas de public. Con
+-- RLS eso ya es inofensivo (las operaciones afectan 0 filas), pero dejar el
+-- privilegio significa que una política permisiva agregada por error mañana
+-- expondría los datos de inmediato. Sin el privilegio, no.
+revoke all   on public.subscribers  from anon, authenticated;
+grant  usage on schema public       to   anon;
+grant  insert on public.subscribers to   anon;
