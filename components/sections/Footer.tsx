@@ -10,7 +10,7 @@ export function Footer() {
           src="/icons/wordmark.svg"
           alt="BROCHA"
           width={171}
-          height={30}
+          height={25}
           className="block"
         />
         <p className="text-[16px] font-light text-brocha-violet lg:text-[20px]">

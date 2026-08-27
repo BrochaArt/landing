@@ -1,8 +1,15 @@
+"use client";
+
 import Image from "next/image";
+import { useState } from "react";
 import { Container } from "@/components/ui/Container";
 import { artistas } from "@/lib/content";
 
 export function Artistas() {
+  const [expandido, setExpandido] = useState(false);
+  const visibles = artistas.visiblePorDefecto;
+  const ocultos = artistas.items.length - visibles;
+
   return (
     <section id="artistas" className="bg-brocha-violet py-20 lg:py-[100px]">
       <Container>
@@ -13,41 +20,69 @@ export function Artistas() {
           {artistas.title}
         </h2>
 
-        <ul className="mt-12 grid grid-cols-1 gap-x-10 gap-y-12 sm:grid-cols-2 lg:mt-[75px] lg:grid-cols-4">
-          {artistas.items.map((artista) => (
-            <li key={artista.name}>
-              <div className="relative aspect-[265/301] w-full overflow-hidden">
-                <Image
-                  src={artista.photo}
-                  alt={`Retrato de ${artista.name}`}
-                  fill
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 265px"
-                  className="object-cover grayscale"
-                />
-                <div className="absolute inset-x-0 bottom-0 flex items-center gap-2 bg-black/55 px-3 py-2 backdrop-blur-[2px]">
-                  <span className="relative block h-[18px] w-[18px] shrink-0 overflow-hidden rounded-full">
-                    <Image
-                      src={artista.flag}
-                      alt=""
-                      fill
-                      sizes="18px"
-                      className="object-cover"
-                    />
-                  </span>
-                  <span className="text-[12px] font-bold text-white">
-                    {artista.country}
-                  </span>
+        <ul className="mt-10 grid grid-cols-2 gap-x-4 gap-y-8 sm:gap-x-6 lg:mt-[75px] lg:grid-cols-4 lg:gap-x-10 lg:gap-y-12">
+          {artistas.items.map((artista, i) => (
+            <li
+              key={artista.name}
+              // En pantallas chicas solo se ven los primeros; en desktop caben
+              // todos y el botón sobra.
+              className={
+                i >= visibles && !expandido ? "hidden lg:block" : undefined
+              }
+            >
+              <a
+                href="#artistas"
+                className="group block focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brocha-yellow"
+              >
+                <div className="relative aspect-[265/301] w-full overflow-hidden rounded-[15px]">
+                  <Image
+                    src={artista.photo}
+                    alt={`Retrato de ${artista.name}`}
+                    fill
+                    sizes="(max-width: 1024px) 50vw, 265px"
+                    className="object-cover grayscale transition-opacity duration-200 group-hover:opacity-70"
+                  />
+                  {artista.country && artista.flag ? (
+                    <div className="absolute inset-x-0 bottom-0 flex items-center gap-2 bg-black/55 px-3 py-2">
+                      <span className="relative block h-[18px] w-[18px] shrink-0 overflow-hidden rounded-full">
+                        <Image
+                          src={artista.flag}
+                          alt=""
+                          fill
+                          sizes="18px"
+                          className="object-cover"
+                        />
+                      </span>
+                      <span className="text-[12px] font-bold text-white">
+                        {artista.country}
+                      </span>
+                    </div>
+                  ) : null}
                 </div>
-              </div>
-              <h3 className="mt-4 text-[20px] font-bold text-brocha-yellow">
-                {artista.name}
-              </h3>
-              <p className="mt-1 text-[14px] font-light text-white">
-                {artista.bio}
-              </p>
+                <h3 className="mt-3 text-[16px] font-bold text-brocha-yellow lg:mt-4 lg:text-[20px]">
+                  {artista.name}
+                </h3>
+                {artista.bio ? (
+                  <p className="mt-1 text-[13px] font-light text-white lg:text-[14px]">
+                    {artista.bio}
+                  </p>
+                ) : null}
+              </a>
             </li>
           ))}
         </ul>
+
+        {ocultos > 0 && !expandido ? (
+          <div className="mt-8 flex justify-center lg:hidden">
+            <button
+              type="button"
+              onClick={() => setExpandido(true)}
+              className="text-[14px] font-bold text-brocha-yellow underline underline-offset-4"
+            >
+              Cargar más ({ocultos})
+            </button>
+          </div>
+        ) : null}
       </Container>
     </section>
   );

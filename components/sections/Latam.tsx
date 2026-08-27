@@ -17,10 +17,10 @@ export function Latam() {
           </span>
         </h2>
 
-        <ul className="mt-14 flex flex-wrap items-start justify-center gap-16 lg:mt-[80px] lg:gap-[190px]">
+        <ul className="mt-12 flex flex-nowrap items-start justify-center gap-10 sm:gap-20 lg:mt-[80px] lg:gap-[190px]">
           {latam.items.map((item) => (
             <li key={item.country} className="flex flex-col items-center">
-              <span className="relative block h-[120px] w-[120px] overflow-hidden rounded-full lg:h-[150px] lg:w-[150px]">
+              <span className="relative block h-[88px] w-[88px] overflow-hidden rounded-full sm:h-[120px] sm:w-[120px] lg:h-[150px] lg:w-[150px]">
                 <Image
                   src={item.flag}
                   alt={`Bandera de ${item.country}`}
@@ -29,7 +29,7 @@ export function Latam() {
                   className="object-cover"
                 />
               </span>
-              <span className="mt-6 text-[18px] font-medium text-white lg:text-[20px]">
+              <span className="mt-4 text-[14px] font-medium text-white sm:text-[18px] lg:text-[20px]">
                 {item.label}
               </span>
             </li>

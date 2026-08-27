@@ -26,11 +26,13 @@ export function Perfiles() {
           ))}
         </h2>
 
-        <ul className="mt-12 grid gap-5 lg:mt-[70px] lg:grid-cols-3">
+        {/* Móvil: carrusel deslizable con el contenido centrado, igual que la
+            sección "Qué es Brocha". Desktop: los tres en una fila. */}
+        <ul className="-mx-6 mt-12 flex snap-x snap-mandatory items-stretch gap-5 overflow-x-auto scroll-smooth px-6 pb-4 [scrollbar-width:none] sm:-mx-8 sm:px-8 lg:mx-0 lg:mt-[70px] lg:grid lg:grid-cols-3 lg:overflow-visible lg:px-0 lg:pb-0 [&::-webkit-scrollbar]:hidden">
           {perfiles.items.map((item) => (
             <li
               key={item.title}
-              className="flex min-h-[300px] flex-col rounded-[20px] bg-brocha-lav-soft p-[30px]"
+              className="flex min-h-[300px] w-[280px] shrink-0 snap-start flex-col items-center rounded-[20px] bg-brocha-lav-soft p-[30px] text-center sm:w-[320px] lg:w-auto lg:items-start lg:text-left"
             >
               <div className="flex h-[120px] items-center">
                 <Image

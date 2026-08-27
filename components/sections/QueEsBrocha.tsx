@@ -51,16 +51,18 @@ export function QueEsBrocha() {
       </Container>
 
       <div className="relative mt-12 lg:mt-[60px]">
-        <Container className="relative">
+        {/* En xl las flechas viven en los márgenes (como en el Figma), así
+            que el riel se estrecha para no quedar debajo de ellas. */}
+        <Container className="relative xl:px-[110px]">
           <ul
             ref={trackRef}
             onScroll={sync}
-            className="flex snap-x snap-mandatory gap-5 overflow-x-auto scroll-smooth pb-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+            className="flex snap-x snap-mandatory items-stretch gap-5 overflow-x-auto scroll-smooth pb-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
           >
             {carouselCards.map((card) => (
               <li
                 key={card.id}
-                className="flex h-[270px] w-[300px] shrink-0 snap-start flex-col items-center rounded-[20px] bg-brocha-violet px-6 pt-[44px] text-center sm:w-[340px] lg:w-[360px]"
+                className="flex min-h-[270px] w-[280px] shrink-0 snap-start flex-col items-center justify-start rounded-[20px] bg-brocha-violet px-6 pb-8 pt-[44px] text-center transition-colors duration-200 hover:bg-brocha-deep sm:w-[320px] lg:w-[360px]"
               >
                 <div className="flex h-[60px] items-end justify-center">
                   <Image
@@ -74,7 +76,7 @@ export function QueEsBrocha() {
                 <h3 className="mt-[26px] font-[family-name:var(--font-display)] text-[22px] font-bold text-white lg:text-[25px]">
                   {card.title}
                 </h3>
-                <p className="mt-3 max-w-[319px] text-[16px] font-medium text-white">
+                <p className="mt-3 w-full max-w-[319px] text-[15px] font-medium text-white lg:text-[16px]">
                   {card.body}
                 </p>
               </li>
@@ -89,7 +91,15 @@ export function QueEsBrocha() {
           aria-label="Tarjeta anterior"
           className="absolute left-0 top-1/2 hidden h-[290px] w-[92px] -translate-y-1/2 transition-opacity disabled:opacity-25 xl:block"
         >
-          <Image src="/icons/chevron-left.svg" alt="" width={92} height={290} />
+          {/* El SVG del Figma apunta a la derecha en los dos lados; este se
+              voltea para que la flecha izquierda sea realmente "<". */}
+          <Image
+            src="/icons/chevron-left.svg"
+            alt=""
+            width={92}
+            height={290}
+            className="scale-x-[-1]"
+          />
         </button>
         <button
           type="button"

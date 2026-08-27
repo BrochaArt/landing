@@ -1,7 +1,11 @@
 @import "tailwindcss";
 
 /* Tokens del Figma (variables reales del archivo BROCHA-page) */
+/* El diseño es de un solo tono. `only light` le prohíbe al navegador (y al
+   modo oscuro del sistema, incluido el "forzar oscuro" de Chrome/Samsung)
+   reinterpretar los colores: sin esto el morado y el amarillo se ensucian. */
 :root {
+  color-scheme: only light;
   --brocha-violet: #7454e8;   /* Color 3 */
   --brocha-deep: #371d90;     /* Color 4 */
   --brocha-yellow: #fdff84;   /* Color 2 */

@@ -71,6 +71,14 @@ export const carouselCards = [
     iconWidth: 70,
     iconHeight: 60,
   },
+  {
+    id: "virtuales",
+    title: "Eventos virtuales",
+    body: "Sesiones de video en vivo para interactuar con los artistas y aprender de ellos.",
+    icon: "/icons/c-virtuales.svg",
+    iconWidth: 60,
+    iconHeight: 60,
+  },
 ] as const;
 
 export const comoElegimos = {
@@ -87,39 +95,37 @@ export const comoElegimos = {
   ],
 } as const;
 
+/**
+ * País y biografía son opcionales a propósito: las 9 fotos vinieron del Drive
+ * pero sin esos datos, y no se inventan. La tarjeta se ve bien sin ellos
+ * (foto + nombre) y los muestra en cuanto se rellenen.
+ */
+export type Artista = {
+  name: string;
+  photo: string;
+  country?: string;
+  flag?: string;
+  bio?: string;
+};
+
+const artistasItems: Artista[] = [
+    { name: "Edson Chacon", photo: "/images/artistas/edson-chacon.webp" },
+    { name: "Ilustronauta", photo: "/images/artistas/ilustronauta.webp" },
+    { name: "Origen Peregrino", photo: "/images/artistas/origen-peregrino.webp" },
+    { name: "Rafael Lanfranco", photo: "/images/artistas/rafael-lanfranco.webp" },
+    { name: "Roberto Peremese", photo: "/images/artistas/roberto-peremese.webp" },
+    { name: "Tamiki", photo: "/images/artistas/tamiki.webp" },
+    { name: "Unicornio Azul", photo: "/images/artistas/unicornioazul-rosita-charaja.webp" },
+    { name: "Ximena Collado", photo: "/images/artistas/ximena-collado.webp" },
+  { name: "Xomatok", photo: "/images/artistas/xomatok.webp" },
+];
+
 export const artistas = {
   eyebrow: "Artistas seleccionados",
   title: "Artistas BROCHA",
-  items: [
-    {
-      name: "Laura M.",
-      country: "Colombia",
-      flag: "/images/flags/co.webp",
-      photo: "/images/artistas/laura-m.jpg",
-      bio: "Diseñador, muralista e ilustrador peruano de estilo vibrante y urbano.",
-    },
-    {
-      name: "Edson Chacon Huari",
-      country: "Colombia",
-      flag: "/images/flags/co.webp",
-      photo: "/images/artistas/edson-chacon.png",
-      bio: "Diseñador, muralista e ilustrador peruano de estilo vibrante y urbano.",
-    },
-    {
-      name: "Elliot Tupac",
-      country: "Perú",
-      flag: "/images/flags/pe.webp",
-      photo: "/images/artistas/elliot-tupac.jpg",
-      bio: "Diseñador, muralista e ilustrador peruano de estilo vibrante y urbano.",
-    },
-    {
-      name: "Origen Peregrino",
-      country: "Perú",
-      flag: "/images/flags/pe.webp",
-      photo: "/images/artistas/origen-peregrino.png",
-      bio: "Diseñador, muralista e ilustrador peruano de estilo vibrante y urbano.",
-    },
-  ],
+  /** Cuántos se ven antes de pulsar "Cargar más" en móvil. */
+  visiblePorDefecto: 6,
+  items: artistasItems,
 } as const;
 
 export const queVer = {
@@ -185,8 +191,22 @@ export const eventos = {
   eyebrow: "Eventos que hemos realizado",
   title: ["El arte fuera de", "la galeria"],
   items: [
-    { title: "Brocha Viva", image: "/images/evento-brocha-viva.webp" },
-    { title: "Brocha SubPop", image: "/images/evento-subpop.webp" },
+    {
+      title: "Brocha Viva",
+      image: "/images/evento-brocha-viva.webp",
+      // Del Figma solo salió esta foto. Al agregar más al arreglo, el visor
+      // muestra las flechas y el contador automáticamente.
+      photos: ["/images/evento-brocha-viva.webp"],
+    },
+    {
+      title: "Brocha SubPop",
+      subtitle: "Lima, Perú",
+      image: "/images/evento-subpop.webp",
+      photos: Array.from(
+        { length: 12 },
+        (_, i) => `/images/eventos/subpop/subpop-${String(i + 1).padStart(2, "0")}.webp`,
+      ),
+    },
   ],
 } as const;
 

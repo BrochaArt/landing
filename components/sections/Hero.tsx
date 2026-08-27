@@ -21,7 +21,7 @@ export function Hero() {
       <div className="absolute inset-0 -z-10 bg-gradient-to-r from-[#38098e] from-0% via-[rgba(74,12,188,0.9)] via-[20%] to-[rgba(59,42,79,0)]" />
 
       <Container className="py-16 lg:py-0">
-        <div className="max-w-[498px]">
+        <div className="mx-auto max-w-[498px] text-center lg:mx-0 lg:text-left">
           <h1 className="text-[36px] font-extrabold uppercase leading-[1.1] sm:text-[44px] lg:text-[50px] lg:leading-[55px]">
             <span className="block text-brocha-yellow">{hero.titleTop}</span>
             <span className="block text-white">{hero.titleBottom}</span>
@@ -33,7 +33,7 @@ export function Hero() {
           </p>
           <p className="mt-6 text-[16px] font-medium text-white">{hero.body}</p>
 
-          <div className="mt-10 flex flex-col gap-4 sm:flex-row">
+          <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center lg:justify-start">
             <ButtonLink href="#acceso" className="w-full sm:w-[240px]">
               {hero.primaryCta}
             </ButtonLink>

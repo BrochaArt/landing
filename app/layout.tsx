@@ -23,6 +23,11 @@ const lexend = Lexend({
   display: "swap",
 });
 
+export const viewport = {
+  colorScheme: "only light" as const,
+  themeColor: "#7454e8",
+};
+
 export const metadata: Metadata = {
   title: "BROCHA — Somos el arte de conectar",
   description:

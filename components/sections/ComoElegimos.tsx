@@ -9,14 +9,14 @@ export function ComoElegimos() {
           <p className="text-[18px] font-medium text-brocha-deep lg:text-[25px]">
             {comoElegimos.eyebrow}
           </p>
-          <h2 className="mt-3 text-[30px] font-extrabold leading-[1.08] text-brocha-deep sm:text-[38px] lg:text-[50px] lg:leading-[50px]">
+          <h2 className="mt-3 text-[24px] font-extrabold leading-[1.15] text-brocha-deep sm:text-[34px] lg:text-[50px] lg:leading-[50px]">
             {comoElegimos.title.map((line) => (
               <span key={line} className="block">
                 {line}
               </span>
             ))}
           </h2>
-          <div className="mt-7 text-[16px] font-medium text-brocha-deep">
+          <div className="mt-6 text-[14px] font-medium text-brocha-deep lg:text-[16px]">
             {comoElegimos.body.map((line) => (
               <p key={line}>{line}</p>
             ))}
