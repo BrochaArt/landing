@@ -1,0 +1,11 @@
+# El deploy por CLI sube el directorio local; .gitignore no aplica aquí.
+# qa/ trae los originales del Drive (3.8 GB, con videos de más de 100 MB).
+qa/
+
+# Renders de verificación y scripts de QA: no forman parte del build.
+.preview/
+scripts/
+
+.git/
+node_modules/
+.next/

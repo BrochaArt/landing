@@ -1,4 +1,6 @@
-import { NextResponse } from "next/server";
+import { after, NextResponse } from "next/server";
+import { BienvenidaEmail } from "@/components/email/BienvenidaEmail";
+import { REMITENTE, getResend } from "@/lib/email";
 import { getSupabase } from "@/lib/supabase";
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
@@ -58,6 +60,29 @@ export async function POST(request: Request) {
       { status: 500 },
     );
   }
+
+  // El correo se envía después de responder: quien se suscribe ve la
+  // confirmación de inmediato y un fallo de envío nunca rompe el alta.
+  after(async () => {
+    const resend = getResend();
+    if (!resend) {
+      console.warn("[subscribe] Sin RESEND_API_KEY: no se envía bienvenida.");
+      return;
+    }
+    try {
+      const { error: errorCorreo } = await resend.emails.send({
+        from: REMITENTE,
+        to: [normalized],
+        subject: "Ya estás en la lista de BROCHA",
+        react: BienvenidaEmail({ email: normalized }),
+      });
+      if (errorCorreo) {
+        console.error("[subscribe] Resend rechazó el envío:", errorCorreo);
+      }
+    } catch (e) {
+      console.error("[subscribe] Falló el envío de bienvenida:", e);
+    }
+  });
 
   return NextResponse.json({ ok: true });
 }
