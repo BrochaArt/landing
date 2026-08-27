@@ -1,36 +1,63 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# BROCHA — Landing
 
-## Getting Started
+Landing de acceso anticipado de [BROCHA](https://brocha-landing.vercel.app),
+construida desde el diseño de Figma del archivo *BROCHA-page*.
 
-First, run the development server:
+## Correr el proyecto
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Necesitas un `.env.local`. Copia `.env.example` y rellena los valores; en
+Vercel ya están cargados, así que también sirve:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+vercel env pull .env.local
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Cómo está organizado
 
-## Learn More
+| Ruta | Qué hay |
+|---|---|
+| `lib/content.ts` | **Todo el copy y los datos.** Agregar un artista o una tarjeta es añadir un objeto aquí, sin tocar JSX. |
+| `components/sections/` | Una sección de la página por archivo. |
+| `components/ui/` | Piezas compartidas: botón, contenedor, formulario, visor de galería. |
+| `app/globals.css` | Los tokens del Figma como variables CSS. |
+| `app/api/subscribe/` | Endpoint que guarda suscripciones y dispara el correo de bienvenida. |
+| `supabase/migrations/` | Esquema de la tabla `subscribers`. |
+| `scripts/` | Verificación automatizada con Playwright. |
 
-To learn more about Next.js, take a look at the following resources:
+## Tokens del diseño
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+| Variable | Valor | Uso |
+|---|---|---|
+| `--brocha-violet` | `#7454e8` | Violeta principal |
+| `--brocha-deep` | `#371d90` | Morado oscuro |
+| `--brocha-yellow` | `#fdff84` | Amarillo de titulares y botones |
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Tipografías: **Montserrat** (titulares y cuerpo), **Syne** (títulos de tarjeta)
+y **Lexend** (enlaces del navbar).
 
-## Deploy on Vercel
+## Suscripciones
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Los correos se guardan en Supabase. La tabla tiene RLS con una única política
+de `INSERT`: la landing puede dar de alta, pero **no puede leer, modificar ni
+borrar** la lista. Para consultarla se usa el dashboard de Supabase.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+El correo de bienvenida sale por Resend después de responder la petición, así
+que un fallo de envío nunca rompe el alta.
+
+## Verificar antes de desplegar
+
+```bash
+npm run build && node scripts/qa-check.mjs
+```
+
+Revisa hidratación, la galería, el "Cargar más", el desbordamiento horizontal
+y los errores de consola, en desktop y móvil. Con `QA_URL` apunta a producción.
+
+## Despliegue
+
+Cada push a `main` despliega a producción; cada Pull Request genera su preview.
