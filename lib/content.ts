@@ -117,8 +117,18 @@ export type Artista = {
 };
 
 const PE = "/images/flags/pe.webp";
+const CO = "/images/flags/co.webp";
 
 const artistasItems: Artista[] = [
+  {
+    name: "Sara Alarcón",
+    photo: "/images/artistas/sara-alarcon.webp",
+    country: "Colombia",
+    flag: CO,
+    bio: "Artista e ilustradora de Medellín y fundadora de Brocha. Transforma la realidad a través del color, la textura y el movimiento.",
+    bioCompleta:
+      "Artista e ilustradora colombiana originaria de Medellín y fundadora de Brocha. Sara se ha consolidado como una voz emergente en el panorama artístico contemporáneo gracias a obras que transforman la realidad a través del color, la textura y el movimiento. Su lenguaje visual, vibrante y profundamente expresivo, desafía la percepción del espectador e invita a cuestionar la idea de una única verdad. Impulsada por el deseo de generar conexiones humanas a través del arte, creó Brocha Viva como una iniciativa que convierte la pintura en una experiencia colectiva, cercana y emocional.",
+  },
   {
     name: "Ximena Collado",
     photo: "/images/artistas/ximena-collado.webp",
@@ -196,6 +206,15 @@ const artistasItems: Artista[] = [
       "Elliot Tupac es palabra y es acción. Es el mensaje y el medio a la vez. La palabra y su caligrafía, concreta y humanizada, es el vínculo que dialoga con todas y todos a partir de la interpretación personal y las vivencias únicas del espectador. El arte de Elliot huele a tinta fresca, se expande con colores y nos emociona desde la síntesis: celebra la vida y la esperanza, y nos enseña a despegar las etiquetas y a desterrar los estereotipos.",
   },
   {
+    name: "Pésimo",
+    photo: "/images/artistas/pesimo.webp",
+    country: "Perú",
+    flag: PE,
+    bio: "Pintor, muralista e ilustrador limeño. Su trayectoria consolidó el grafiti de calle como arte formal en el Perú.",
+    bioCompleta:
+      "Edwin Higuchi Fernández, artísticamente conocido como Pésimo, es un destacado pintor, muralista e ilustrador peruano, nacido en Lima en 1983. Su trayectoria consolidó al grafiti de calle como una manifestación artística formal e internacionalmente respetada en el Perú.",
+  },
+  {
     name: "Xomatok",
     photo: "/images/artistas/xomatok.webp",
     country: "Perú",
@@ -203,12 +222,6 @@ const artistasItems: Artista[] = [
     bio: "Explora el color como fenómeno espacial: sus campos cromáticos alteran la arquitectura y la experiencia del espacio.",
     bioCompleta:
       "Jesús Camarena Lovera, “Xomatok”, es un artista visual peruano cuya práctica explora el color como un fenómeno espacial y perceptivo. A través de la pintura, la instalación y las intervenciones site-specific, investiga cómo los campos cromáticos pueden alterar la arquitectura y transformar la experiencia del espacio. En el centro de su investigación está el espectro visible entendido como un umbral físico y simbólico.",
-  },
-  {
-    // Llegó la foto pero no la biografía. Se muestra solo con su nombre
-    // hasta que BROCHA la envíe.
-    name: "Unicornio Azul",
-    photo: "/images/artistas/unicornioazul-rosita-charaja.webp",
   },
 ];
 
