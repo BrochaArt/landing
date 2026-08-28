@@ -13,13 +13,10 @@ export const nav = [
 ] as const;
 
 export const hero = {
-  titleTop: "Somos el arte",
-  titleBottom: "de conectar.",
-  leadPlain: "Vemos al artista en 360°: no solo su obra, también",
-  leadStrong: " su historia, su marca y su proceso.",
-  body: "Le devolvemos el poder al artista latinoamericano con estudios, tienda, eventos y certificados de autenticidad en blockchain.",
-  primaryCta: "Quiero acceso anticipado",
-  secondaryCta: "Descubre brocha",
+  title: "Sello de Arte Latinoamericano Independiente",
+  subtitle:
+    "Conecta, aprende y colecciona directamente de los mejores artistas latinoamericanos",
+  cta: "Descubre BROCHA",
 } as const;
 
 export const queEsBrocha = {

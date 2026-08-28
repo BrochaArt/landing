@@ -30,10 +30,11 @@ export function Artistas() {
                 i >= visibles && !expandido ? "hidden lg:block" : undefined
               }
             >
-              <a
-                href="#artistas"
-                className="group block focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brocha-yellow"
-              >
+              {/* Sin <a>: no hay ficha de artista todavía, y un href="#artistas"
+                  hacía que al tocar una tarjeta en móvil la página saltara al
+                  inicio de la sección. Cuando existan las fichas, esto vuelve
+                  a ser un enlace. */}
+              <div className="group">
                 <div className="relative aspect-[265/301] w-full overflow-hidden rounded-[15px]">
                   <Image
                     src={artista.photo}
@@ -67,7 +68,7 @@ export function Artistas() {
                     {artista.bio}
                   </p>
                 ) : null}
-              </a>
+              </div>
             </li>
           ))}
         </ul>

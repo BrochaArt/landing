@@ -11,40 +11,33 @@ export function Hero() {
     >
       <Image
         src="/images/hero.webp"
-        alt="Artistas trabajando en un taller compartido"
+        alt="Visitantes observando una obra en una galería"
         fill
         priority
         sizes="100vw"
-        className="-z-20 object-cover object-center"
+        className="-z-20 object-cover object-center lg:object-left"
       />
-      {/* Degradado del Figma: morado sólido a la izquierda, foto visible a la derecha */}
-      <div className="absolute inset-0 -z-10 bg-gradient-to-r from-[#38098e] from-0% via-[rgba(74,12,188,0.9)] via-[20%] to-[rgba(59,42,79,0)]" />
+      {/* Paradas explícitas en vez de from/via/to: la foto queda limpia hasta el
+          42%, el violeta entra entre 42% y 68%, y de ahí a la derecha es sólido
+          para que el texto se lea. En móvil el degradado es vertical y más
+          denso, porque ahí el texto va encima de la imagen. */}
+      <div className="absolute inset-0 -z-10 bg-[linear-gradient(to_top,#4a17b4_0%,rgba(74,23,180,0.92)_38%,rgba(60,30,120,0.45)_70%,rgba(40,20,90,0.25)_100%)] lg:bg-[linear-gradient(to_right,transparent_0%,transparent_42%,rgba(90,47,214,0.86)_60%,#5a2fd6_74%,#5a2fd6_100%)]" />
 
       <Container className="py-16 lg:py-0">
-        <div className="mx-auto max-w-[498px] text-center lg:mx-0 lg:text-left">
-          <h1 className="text-[36px] font-extrabold uppercase leading-[1.1] sm:text-[44px] lg:text-[50px] lg:leading-[55px]">
-            <span className="block text-brocha-yellow">{hero.titleTop}</span>
-            <span className="block text-white">{hero.titleBottom}</span>
+        <div className="ml-auto max-w-[520px] text-center lg:text-left">
+          <h1 className="text-[34px] font-bold leading-[1.1] text-white sm:text-[42px] lg:text-[50px] lg:leading-[1.08]">
+            {hero.title}
           </h1>
-
-          <p className="mt-7 text-[16px] font-medium text-white">
-            {hero.leadPlain}
-            <strong className="font-extrabold">{hero.leadStrong}</strong>
+          <p className="mt-5 text-[15px] font-medium text-white/90 lg:mt-6 lg:text-[16px]">
+            {hero.subtitle}
           </p>
-          <p className="mt-6 text-[16px] font-medium text-white">{hero.body}</p>
-
-          <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center lg:justify-start">
-            <ButtonLink href="#acceso" className="w-full sm:w-[240px]">
-              {hero.primaryCta}
-            </ButtonLink>
-            <ButtonLink
-              href="#que-es-brocha"
-              variant="secondary"
-              className="w-full sm:w-[240px]"
-            >
-              {hero.secondaryCta}
-            </ButtonLink>
-          </div>
+          <ButtonLink
+            href="#que-es-brocha"
+            mayusculas={false}
+            className="mt-8 h-[42px] px-7 text-[14px] lg:mt-9"
+          >
+            {hero.cta}
+          </ButtonLink>
         </div>
       </Container>
     </section>

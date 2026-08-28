@@ -63,7 +63,7 @@ export function SubscribeForm() {
           onChange={(e) => setEmail(e.target.value)}
           placeholder={ctaFinal.placeholder}
           disabled={status === "sending"}
-          className="h-[60px] w-full rounded-[20px] bg-brocha-deep px-6 font-[family-name:var(--font-display)] text-[18px] text-white placeholder:text-white/50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brocha-yellow disabled:opacity-60 sm:w-[394px] lg:text-[20px]"
+          className="h-[60px] w-full rounded-[20px] bg-brocha-deep px-6 text-[16px] font-medium text-white placeholder:text-white/60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brocha-yellow disabled:opacity-60 sm:w-[394px] lg:text-[18px]"
         />
         <Button
           type="submit"
