@@ -29,15 +29,26 @@ export const viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "BROCHA — Somos el arte de conectar",
+  // Base absoluta: sin esto Next no puede resolver la URL de la imagen social,
+  // y las vistas previas al compartir salen sin imagen.
+  metadataBase: new URL("https://www.brocha.art"),
+  title: "BROCHA — Sello de Arte Latinoamericano Independiente",
   description:
-    "Le devolvemos el poder al artista latinoamericano con estudios, tienda, eventos y certificados de autenticidad en blockchain.",
+    "Conecta, aprende y colecciona directamente de los mejores artistas latinoamericanos.",
   openGraph: {
-    title: "BROCHA — Somos el arte de conectar",
+    title: "BROCHA — Sello de Arte Latinoamericano Independiente",
     description:
-      "Le devolvemos el poder al artista latinoamericano con estudios, tienda, eventos y certificados de autenticidad en blockchain.",
+      "Conecta, aprende y colecciona directamente de los mejores artistas latinoamericanos.",
+    url: "https://www.brocha.art",
+    siteName: "BROCHA",
     type: "website",
     locale: "es_LA",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "BROCHA — Sello de Arte Latinoamericano Independiente",
+    description:
+      "Conecta, aprende y colecciona directamente de los mejores artistas latinoamericanos.",
   },
 };
 
