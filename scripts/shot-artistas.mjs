@@ -1,10 +1,10 @@
 import { chromium } from "playwright-core";
 const b = await chromium.launch({ channel: "chrome" });
-const p = await b.newPage({ viewport: { width: 1280, height: 1400 } });
+const p = await b.newPage({ viewport: { width: 1280, height: 1000 } });
 await p.goto("https://brocha-landing.vercel.app", { waitUntil: "networkidle" });
-const box = await p.locator("#artistas").boundingBox();
-await p.evaluate((y) => window.scrollTo(0, y), box.y);
-await p.waitForTimeout(2500);
-await p.screenshot({ path: ".preview/artistas-prod.png", clip: { x: 0, y: 110, width: 1280, height: 1200 } });
+const s = p.locator("#artistas");
+await s.scrollIntoViewIfNeeded();
+await p.waitForTimeout(3000);
+await s.screenshot({ path: ".preview/artistas-prod.png" });
 console.log("listo");
 await b.close();

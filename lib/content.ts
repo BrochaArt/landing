@@ -102,9 +102,8 @@ export const comoElegimos = {
  * texto íntegro que mandó BROCHA, para cuando exista una vista de detalle.
  * Las cortas son condensaciones de esos mismos textos, no redacciones nuevas.
  *
- * `paisInferido` marca a quienes NO declaran nacionalidad en su biografía y
- * cuyo país se dedujo del contenido (mitología peruana, herencia andina...).
- * Están para confirmar, no para dar por buenos.
+ * Nacionalidades confirmadas por BROCHA: todos son de Perú salvo Sara Alarcón,
+ * que es de Colombia.
  */
 export type Artista = {
   name: string;
@@ -113,7 +112,6 @@ export type Artista = {
   flag?: string;
   bio?: string;
   bioCompleta?: string;
-  paisInferido?: boolean;
 };
 
 const PE = "/images/flags/pe.webp";
@@ -161,7 +159,6 @@ const artistasItems: Artista[] = [
     photo: "/images/artistas/rafael-lanfranco.webp",
     country: "Perú",
     flag: PE,
-    paisInferido: true,
     bio: "Cruza cerámica precolombina y cosmovisión andina con anime y cultura pop. Construye universos como el Wakoverso.",
     bioCompleta:
       "Mi trabajo artístico se sitúa en un territorio híbrido donde la mitología, el diseño contemporáneo y la cultura popular convergen para crear universos narrativos propios. A través del Wakoverso y El Imaquinario de Yute y Tocuyo, no construyo solo objetos, sino sistemas simbólicos vivos. Mi obra dialoga con la cerámica precolombina y la cosmovisión andina, y las reinterpreta desde una sensibilidad contemporánea influida por el anime, el arte urbano y la cultura pop global: el arte como tecnología narrativa.",
@@ -171,7 +168,6 @@ const artistasItems: Artista[] = [
     photo: "/images/artistas/origen-peregrino.webp",
     country: "Perú",
     flag: PE,
-    paisInferido: true,
     bio: "Fusiona la herencia milenaria, las costumbres locales y la mitología peruana con un lenguaje lúdico y de diseño industrial.",
     bioCompleta:
       "Fusionar la herencia milenaria, las costumbres locales y la mitología peruana con un lenguaje lúdico, moderno y de diseño industrial.",
@@ -181,7 +177,6 @@ const artistasItems: Artista[] = [
     photo: "/images/artistas/roberto-peremese.webp",
     country: "Perú",
     flag: PE,
-    paisInferido: true,
     bio: "Bellas Artes y espacio público. La herencia andina y la psicodelia amazónica habitan su obra como memoria viva.",
     bioCompleta:
       "Su producción se articula en la intersección del rigor académico de las Bellas Artes y un oficio forjado en la libertad del espacio público. La herencia andina y la psicodelia amazónica no son referencias externas: habitan en su configuración como una memoria viva, activada a través del rito y la vivencia directa del territorio. La figura del felino emerge como un eje transversal, guardián de lo sutil entre lo instintivo y lo sagrado hecho materia.",
@@ -200,7 +195,6 @@ const artistasItems: Artista[] = [
     photo: "/images/artistas/elliot-tupac.webp",
     country: "Perú",
     flag: PE,
-    paisInferido: true,
     bio: "Su caligrafía, concreta y humanizada, es un puente social. Celebra la vida y la esperanza, y destierra estereotipos.",
     bioCompleta:
       "Elliot Tupac es palabra y es acción. Es el mensaje y el medio a la vez. La palabra y su caligrafía, concreta y humanizada, es el vínculo que dialoga con todas y todos a partir de la interpretación personal y las vivencias únicas del espectador. El arte de Elliot huele a tinta fresca, se expande con colores y nos emociona desde la síntesis: celebra la vida y la esperanza, y nos enseña a despegar las etiquetas y a desterrar los estereotipos.",
