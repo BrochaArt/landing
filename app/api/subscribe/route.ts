@@ -1,6 +1,7 @@
 import { after, NextResponse } from "next/server";
 import { bienvenidaHtml, bienvenidaTexto } from "@/lib/email-bienvenida";
 import { REMITENTE, getResend } from "@/lib/email";
+import { registrarContacto } from "@/lib/resend-contacto";
 import { getSupabase } from "@/lib/supabase";
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
@@ -69,6 +70,10 @@ export async function POST(request: Request) {
       console.warn("[subscribe] Sin RESEND_API_KEY: no se envía bienvenida.");
       return;
     }
+
+    // Alta en la lista de Resend, para poder mandarle campañas después.
+    await registrarContacto(normalized);
+
     try {
       const { error: errorCorreo } = await resend.emails.send({
         from: REMITENTE,
