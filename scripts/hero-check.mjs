@@ -15,7 +15,8 @@ const out = {};
   out.textoEmpiezaEnX = Math.round(caja.x);
   out.mitadDerecha = caja.x > 640;
   out.botones = await p.locator("#top a").count();
-  out.textoBoton = await p.locator("#top a").first().innerText();
+  out.textoBoton = (await p.locator("#top a").allInnerTexts()).join(" | ");
+  out.destinos = (await p.locator("#top a").evaluateAll((as) => as.map((a) => a.getAttribute("href")))).join(" | ");
   await p.locator("#top").screenshot({ path: ".preview/hero-nuevo.png" });
   await p.close();
 }

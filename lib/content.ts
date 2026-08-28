@@ -16,7 +16,8 @@ export const hero = {
   title: "Sello de Arte Latinoamericano Independiente",
   subtitle:
     "Conecta, aprende y colecciona directamente de los mejores artistas latinoamericanos",
-  cta: "Descubre BROCHA",
+  ctaPrimario: "Quiero acceso anticipado",
+  ctaSecundario: "Descubre BROCHA",
 } as const;
 
 export const queEsBrocha = {

@@ -31,13 +31,26 @@ export function Hero() {
           <p className="mt-5 text-[15px] font-medium text-white/90 lg:mt-6 lg:text-[16px]">
             {hero.subtitle}
           </p>
-          <ButtonLink
-            href="#que-es-brocha"
-            mayusculas={false}
-            className="mt-8 h-[42px] px-7 text-[14px] lg:mt-9"
-          >
-            {hero.cta}
-          </ButtonLink>
+          {/* El amarillo es el CTA de suscripción en todo el sitio (navbar y
+              cierre), así que va primero y "Descubre BROCHA" pasa a blanco:
+              dos botones amarillos competirían y ninguno leería como principal. */}
+          <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center lg:mt-9 lg:justify-start">
+            <ButtonLink
+              href="#acceso"
+              mayusculas={false}
+              className="h-[42px] w-full px-7 text-[14px] sm:w-auto"
+            >
+              {hero.ctaPrimario}
+            </ButtonLink>
+            <ButtonLink
+              href="#que-es-brocha"
+              variant="secondary"
+              mayusculas={false}
+              className="h-[42px] w-full px-7 text-[14px] sm:w-auto"
+            >
+              {hero.ctaSecundario}
+            </ButtonLink>
+          </div>
         </div>
       </Container>
     </section>
