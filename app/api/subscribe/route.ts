@@ -1,5 +1,5 @@
 import { after, NextResponse } from "next/server";
-import { BienvenidaEmail } from "@/components/email/BienvenidaEmail";
+import { bienvenidaHtml, bienvenidaTexto } from "@/lib/email-bienvenida";
 import { REMITENTE, getResend } from "@/lib/email";
 import { getSupabase } from "@/lib/supabase";
 
@@ -74,7 +74,8 @@ export async function POST(request: Request) {
         from: REMITENTE,
         to: [normalized],
         subject: "Ya estás en la lista de BROCHA",
-        react: BienvenidaEmail({ email: normalized }),
+        html: bienvenidaHtml(normalized),
+        text: bienvenidaTexto(normalized),
       });
       if (errorCorreo) {
         console.error("[subscribe] Resend rechazó el envío:", errorCorreo);
