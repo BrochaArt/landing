@@ -8,7 +8,7 @@ p.on("response", (r) => {
   if (r.url().includes("/api/admin/suscriptores")) peticiones.push([r.status(), r.url()]);
 });
 
-await p.goto("http://localhost:3000/admin", { waitUntil: "networkidle" });
+await p.goto((process.env.BASE ?? "http://localhost:3000") + "/admin", { waitUntil: "networkidle" });
 await p.fill("input[type=password]", PW);
 await p.click('button[type=submit]');
 await p.waitForTimeout(1500);
