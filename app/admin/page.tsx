@@ -22,6 +22,7 @@ export default function AdminPage() {
   const [ocupado, setOcupado] = useState(false);
   const [estado, setEstado] = useState<Estado>(null);
   const [preview, setPreview] = useState("");
+  const [previaCargando, setPreviaCargando] = useState(false);
 
   const cargarSegmentos = useCallback(async () => {
     const r = await fetch("/api/admin/segmentos");
@@ -47,6 +48,37 @@ export default function AdminPage() {
   // Cualquier cambio en el contenido invalida la prueba: no se puede probar
   // una versión y enviar otra.
   useEffect(() => setProbado(false), [titulo, cuerpo]);
+
+  // La vista previa se refresca sola cuando dejas de escribir. El retardo
+  // evita pedirla en cada tecla; el AbortController descarta las respuestas
+  // de peticiones que ya quedaron viejas.
+  useEffect(() => {
+    if (!titulo.trim() || !cuerpo.trim()) {
+      setPreview("");
+      return;
+    }
+    const ctrl = new AbortController();
+    const t = setTimeout(async () => {
+      setPreviaCargando(true);
+      try {
+        const r = await fetch("/api/admin/previa", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ titulo, cuerpo }),
+          signal: ctrl.signal,
+        });
+        if (r.ok) setPreview(await r.text());
+      } catch {
+        // Petición cancelada por otra más reciente: no es un error.
+      } finally {
+        setPreviaCargando(false);
+      }
+    }, 500);
+    return () => {
+      clearTimeout(t);
+      ctrl.abort();
+    };
+  }, [titulo, cuerpo]);
 
   async function entrar(e: React.FormEvent) {
     e.preventDefault();
@@ -215,26 +247,18 @@ export default function AdminPage() {
         </div>
 
         <div>
-          <p className="mb-2 text-[13px] font-semibold text-white/70">Vista previa</p>
+          <p className="mb-2 flex items-center gap-2 text-[13px] font-semibold text-white/70">
+            Vista previa
+            <span className={`text-[12px] font-normal text-white/40 transition-opacity ${previaCargando ? "opacity-100" : "opacity-0"}`}>
+              actualizando…
+            </span>
+          </p>
           <iframe
             title="Vista previa del correo"
-            srcDoc={preview}
+            srcDoc={preview || '<div style="font-family:system-ui;color:#999;padding:32px;text-align:center">Escribe un título y un texto para ver cómo quedará.</div>'}
             className="h-[620px] w-full rounded-[14px] border border-white/10 bg-white"
           />
-          <button
-            onClick={async () => {
-              const r = await fetch("/api/admin/previa", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ titulo, cuerpo }),
-              });
-              setPreview(r.ok ? await r.text() : "<p>No se pudo generar.</p>");
-            }}
-            disabled={!titulo.trim() || !cuerpo.trim()}
-            className={`${boton} mt-3 w-full bg-white/10 text-white`}
-          >
-            Actualizar vista previa
-          </button>
+
         </div>
       </div>
     </Marco>
