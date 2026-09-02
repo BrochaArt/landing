@@ -36,12 +36,16 @@ export function Artistas() {
                   a ser un enlace. */}
               <div className="group">
                 <div className="relative aspect-[265/301] w-full overflow-hidden rounded-[15px]">
+                  {/* En reposo van en blanco y negro, como el Figma; al pasar
+                      el cursor recuperan el color. Sustituye al oscurecido de
+                      antes: el color ya es la señal de que la tarjeta responde,
+                      y hacer las dos cosas a la vez la ensuciaba. */}
                   <Image
                     src={artista.photo}
                     alt={`Retrato de ${artista.name}`}
                     fill
                     sizes="(max-width: 1024px) 50vw, 265px"
-                    className="object-cover grayscale transition-opacity duration-200 group-hover:opacity-70"
+                    className="object-cover grayscale transition-[filter] duration-300 group-hover:grayscale-0"
                   />
                   {artista.country && artista.flag ? (
                     <div className="absolute inset-x-0 bottom-0 flex items-center gap-2 bg-black/55 px-3 py-2">

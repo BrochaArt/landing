@@ -12,11 +12,18 @@ export function CtaFinal() {
       {/* Foto a la derecha, espejada horizontalmente y con esquina superior
           izquierda elíptica (74x143px), tal como está en el Figma. */}
       <div className="pointer-events-none absolute inset-y-0 right-0 -z-10 hidden w-[39%] overflow-hidden rounded-tl-[74px_143px] lg:block">
+        {/* `sizes` NO es el ancho del hueco (39vw). Con object-cover y una
+            foto mucho más apaisada (2.4:1) que el hueco (1.2:1), el navegador
+            tiene que escalarla por la ALTURA, así que necesita un archivo de
+            ~476px × 2.4 ≈ 1140px de ancho. Pedir 40vw hacía que en pantallas
+            sin retina bajara una versión de 640px y la estirara 1.8x: de ahí
+            que se viera pixelada. Como el alto es fijo, el ancho que hace
+            falta también lo es, y por eso va en px y no en vw. */}
         <Image
           src="/images/cta.webp"
           alt=""
           fill
-          sizes="40vw"
+          sizes="1200px"
           className="scale-x-[-1] object-cover object-[93%_top]"
         />
       </div>

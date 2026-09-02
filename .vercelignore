@@ -9,3 +9,7 @@ scripts/
 .git/
 node_modules/
 .next/
+
+# Zips de originales dejados en public/ (2.4 GB).
+public/media
+public/media2

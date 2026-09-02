@@ -46,3 +46,8 @@ next-env.d.ts
 
 # material de QA y originales del Drive (pesados, no van al repo)
 qa/
+
+# Los zip de originales que dejó el equipo (2.4 GB): se sacan las fotos
+# que se usan y el resto no entra ni al repo ni al deploy.
+public/media
+public/media2
