@@ -24,9 +24,26 @@ export async function registrarContacto(email: string): Promise<void> {
       ...(segmento ? { segments: [{ id: segmento }] } : {}),
     });
 
+    if (!error) return;
+
     // Que ya exista no es un fallo: significa que se suscribió antes.
-    if (error && !/already exists/i.test(error.message ?? "")) {
+    if (!/already exists/i.test(error.message ?? "")) {
       console.error("[subscribe] Resend no registró el contacto:", error);
+      return;
+    }
+
+    // Pero `create` no toca los segmentos cuando el contacto ya existía, así
+    // que quien vuelve a suscribirse —o quien quedó de una prueba anterior—
+    // se quedaba fuera de la lista de envío sin que nada lo avisara. Hay que
+    // añadirlo al segmento explícitamente.
+    if (segmento) {
+      const { error: fallo } = await resend.contacts.segments.add({
+        email,
+        segmentId: segmento,
+      });
+      if (fallo) {
+        console.error("[subscribe] No se pudo añadir al segmento:", fallo);
+      }
     }
   } catch (e) {
     console.error("[subscribe] Falló el registro de contacto en Resend:", e);
