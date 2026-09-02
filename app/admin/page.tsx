@@ -30,6 +30,8 @@ export default function AdminPage() {
   const [listaCargando, setListaCargando] = useState(false);
   const [listaTruncada, setListaTruncada] = useState(false);
   const [listaError, setListaError] = useState<string | null>(null);
+  // Se incrementa para volver a pedir la lista sin cambiar de pestaña.
+  const [recarga, setRecarga] = useState(0);
 
   const cargarSegmentos = useCallback(async () => {
     const r = await fetch("/api/admin/segmentos");
@@ -118,7 +120,7 @@ export default function AdminPage() {
       }
     })();
     return () => ctrl.abort();
-  }, [sesion, vista, segmentId]);
+  }, [sesion, vista, segmentId, recarga]);
 
   async function entrar(e: React.FormEvent) {
     e.preventDefault();
@@ -237,6 +239,7 @@ export default function AdminPage() {
           cargando={listaCargando}
           truncada={listaTruncada}
           error={listaError}
+          onImportado={() => setRecarga((n) => n + 1)}
           segmentId={segmentId}
           nombreSegmento={nombreSegmento}
         />
@@ -360,11 +363,13 @@ function Suscriptores({
   error,
   segmentId,
   nombreSegmento,
+  onImportado,
 }: {
   suscriptores: Suscriptor[] | null;
   cargando: boolean;
   truncada: boolean;
   error: string | null;
+  onImportado: () => void;
   segmentId: string;
   nombreSegmento?: string;
 }) {
@@ -407,6 +412,8 @@ function Suscriptores({
           </a>
         </div>
       </div>
+
+      <Importador segmentId={segmentId} nombreSegmento={nombreSegmento} onListo={onImportado} />
 
       {error && <Aviso estado={{ tipo: "error", texto: error }} />}
 
@@ -467,6 +474,135 @@ function fecha(iso: string): string {
   const d = new Date(iso);
   if (Number.isNaN(d.getTime())) return iso;
   return d.toLocaleDateString("es", { day: "2-digit", month: "short", year: "numeric" });
+}
+
+/**
+ * Importa una lista pegada a mano.
+ *
+ * Resend procesa el CSV por su cuenta, así que después de crear la
+ * importación hay que preguntar por el resultado hasta que termine.
+ */
+function Importador({
+  segmentId,
+  nombreSegmento,
+  onListo,
+}: {
+  segmentId: string;
+  nombreSegmento?: string;
+  onListo: () => void;
+}) {
+  const [abierto, setAbierto] = useState(false);
+  const [texto, setTexto] = useState("");
+  const [ocupado, setOcupado] = useState(false);
+  const [resultado, setResultado] = useState<Estado>(null);
+
+  const cuantos = useMemo(() => (texto.match(/@/g) ?? []).length, [texto]);
+
+  async function importar() {
+    setOcupado(true);
+    setResultado(null);
+    try {
+      const r = await fetch("/api/admin/importar", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ correos: texto, segmentId }),
+      });
+      const d = await r.json();
+      if (!r.ok) {
+        setResultado({ tipo: "error", texto: d.error ?? "No se pudo importar." });
+        return;
+      }
+
+      // Se pregunta por el estado hasta que Resend termina. El tope existe
+      // para no dejar el botón girando para siempre si algo se atasca: la
+      // importación sigue su curso, solo deja de mirarse.
+      let cuentas = null;
+      for (let i = 0; i < 30; i++) {
+        await new Promise((r) => setTimeout(r, 1500));
+        const e = await fetch(`/api/admin/importar?id=${d.id}`).then((x) => x.json());
+        if (e.estado === "completed" || e.estado === "failed") {
+          cuentas = e.estado === "failed" ? "fallo" : e.cuentas;
+          break;
+        }
+      }
+
+      if (cuentas === "fallo") {
+        setResultado({ tipo: "error", texto: "Resend no pudo procesar la lista." });
+        return;
+      }
+
+      const partes = [
+        cuentas ? `${cuentas.created} añadidos` : `${d.enviados} correos enviados a Resend`,
+        cuentas?.skipped ? `${cuentas.skipped} ya estaban` : null,
+        d.repetidos ? `${d.repetidos} repetidos en tu lista` : null,
+        d.totalSospechosos ? `${d.totalSospechosos} con errata: ${d.sospechosos.join(", ")}` : null,
+        d.ignorados ? `${d.ignorados} textos que no eran correos, ignorados` : null,
+      ].filter(Boolean);
+
+      setResultado({ tipo: "ok", texto: partes.join(" · ") });
+      setTexto("");
+      onListo();
+    } catch {
+      setResultado({ tipo: "error", texto: "No se pudo conectar." });
+    } finally {
+      setOcupado(false);
+    }
+  }
+
+  if (!abierto) {
+    return (
+      <button
+        onClick={() => setAbierto(true)}
+        className="mt-4 text-[13px] font-semibold text-brocha-yellow underline underline-offset-4"
+      >
+        Importar correos
+      </button>
+    );
+  }
+
+  return (
+    <div className="mt-4 rounded-[14px] border border-white/10 bg-white/5 p-4">
+      <div className="flex items-center justify-between gap-4">
+        <p className="text-[13px] font-semibold text-white/70">
+          Importar a {nombreSegmento ? `«${nombreSegmento}»` : "un segmento"}
+        </p>
+        <button onClick={() => setAbierto(false)} className="text-[13px] text-white/50 underline">
+          Cerrar
+        </button>
+      </div>
+
+      <textarea
+        value={texto}
+        onChange={(e) => setTexto(e.target.value)}
+        rows={5}
+        className={`${campo} mt-3 resize-y font-mono text-[13px]`}
+        placeholder={"ana@ejemplo.com\nbeto@ejemplo.com\n\nPega la lista como la tengas: separada por saltos de línea, comas o espacios."}
+      />
+
+      <div className="mt-3 flex flex-wrap items-center gap-3">
+        <button
+          onClick={importar}
+          disabled={ocupado || !texto.trim() || !segmentId}
+          className={`${boton} bg-brocha-yellow text-black`}
+        >
+          {ocupado ? "Importando…" : "Importar"}
+        </button>
+        <span className="text-[12px] text-white/50">
+          {!segmentId
+            ? "Elige primero un segmento en la pestaña Escribir."
+            : cuantos > 0
+              ? `${cuantos} correos detectados`
+              : "Se ignoran nombres y encabezados de columna."}
+        </span>
+      </div>
+
+      <p className="mt-3 text-[12px] text-white/40">
+        A quien ya se dio de baja no se le vuelve a suscribir, aunque esté en la lista.
+      </p>
+
+      <Aviso estado={resultado} />
+    </div>
+  );
 }
 
 function Marco({ children, ancho }: { children: React.ReactNode; ancho?: boolean }) {
