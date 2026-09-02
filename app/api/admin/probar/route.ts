@@ -5,15 +5,21 @@ import { campanaHtml, campanaTexto } from "@/lib/email-campana";
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
+/** Solo se acepta https: la URL sale de nuestra subida, pero no cuesta cerrarlo. */
+function imagenValida(v: unknown): string | undefined {
+  return typeof v === "string" && v.startsWith("https://") ? v : undefined;
+}
+
 /** Envía la campaña a UNA dirección, para revisarla antes de mandarla a todos. */
 export async function POST(request: Request) {
   const bloqueo = await exigirSesion();
   if (bloqueo) return bloqueo;
 
-  const { titulo, cuerpo, destino } = (await request.json().catch(() => ({}))) as {
+  const { titulo, cuerpo, destino, imagen } = (await request.json().catch(() => ({}))) as {
     titulo?: string;
     cuerpo?: string;
     destino?: string;
+    imagen?: string;
   };
 
   if (!titulo?.trim() || !cuerpo?.trim()) {
@@ -36,7 +42,7 @@ export async function POST(request: Request) {
     from: REMITENTE,
     to: [destino.trim()],
     subject: `[PRUEBA] ${titulo.trim()}`,
-    html: limpiar(campanaHtml(titulo.trim(), cuerpo)),
+    html: limpiar(campanaHtml(titulo.trim(), cuerpo, imagenValida(imagen))),
     text: limpiar(campanaTexto(titulo.trim(), cuerpo)),
   });
 

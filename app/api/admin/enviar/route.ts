@@ -3,6 +3,11 @@ import { exigirSesion } from "@/lib/admin-guard";
 import { REMITENTE, getResend } from "@/lib/email";
 import { campanaHtml, campanaTexto } from "@/lib/email-campana";
 
+/** Solo se acepta https: la URL sale de nuestra subida, pero no cuesta cerrarlo. */
+function imagenValida(v: unknown): string | undefined {
+  return typeof v === "string" && v.startsWith("https://") ? v : undefined;
+}
+
 /**
  * Envía la campaña a un segmento completo.
  *
@@ -14,13 +19,14 @@ export async function POST(request: Request) {
   const bloqueo = await exigirSesion();
   if (bloqueo) return bloqueo;
 
-  const { titulo, cuerpo, segmentId, confirmacion } = (await request
+  const { titulo, cuerpo, segmentId, confirmacion, imagen } = (await request
     .json()
     .catch(() => ({}))) as {
     titulo?: string;
     cuerpo?: string;
     segmentId?: string;
     confirmacion?: string;
+    imagen?: string;
   };
 
   if (!titulo?.trim() || !cuerpo?.trim()) {
@@ -45,7 +51,7 @@ export async function POST(request: Request) {
     from: REMITENTE,
     subject: titulo.trim(),
     segmentId,
-    html: campanaHtml(titulo.trim(), cuerpo),
+    html: campanaHtml(titulo.trim(), cuerpo, imagenValida(imagen)),
     text: campanaTexto(titulo.trim(), cuerpo),
     send: true,
   });

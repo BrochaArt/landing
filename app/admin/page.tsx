@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { reducirImagen } from "@/lib/reducir-imagen";
 
 type Segmento = { id: string; nombre: string };
 type Suscriptor = { email: string; alta: string; dadoDeBaja: boolean };
@@ -26,6 +27,9 @@ export default function AdminPage() {
   const [estado, setEstado] = useState<Estado>(null);
   const [preview, setPreview] = useState("");
   const [previaCargando, setPreviaCargando] = useState(false);
+  const [imagen, setImagen] = useState("");
+  const [subiendo, setSubiendo] = useState(false);
+  const [imagenesOn, setImagenesOn] = useState(false);
   const [suscriptores, setSuscriptores] = useState<Suscriptor[] | null>(null);
   const [listaCargando, setListaCargando] = useState(false);
   const [listaTruncada, setListaTruncada] = useState(false);
@@ -42,6 +46,7 @@ export default function AdminPage() {
     setSesion("dentro");
 
     const d = await r.json().catch(() => ({}));
+    setImagenesOn(Boolean(d.imagenes));
     if (!r.ok) {
       setEstado({ tipo: "error", texto: d.error ?? "No se pudieron cargar los segmentos." });
       return;
@@ -56,7 +61,7 @@ export default function AdminPage() {
 
   // Cualquier cambio en el contenido invalida la prueba: no se puede probar
   // una versión y enviar otra.
-  useEffect(() => setProbado(false), [titulo, cuerpo]);
+  useEffect(() => setProbado(false), [titulo, cuerpo, imagen]);
 
   // La vista previa se refresca sola cuando dejas de escribir. El retardo
   // evita pedirla en cada tecla; el AbortController descarta las respuestas
@@ -73,7 +78,7 @@ export default function AdminPage() {
         const r = await fetch("/api/admin/previa", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ titulo, cuerpo }),
+          body: JSON.stringify({ titulo, cuerpo, imagen }),
           signal: ctrl.signal,
         });
         if (r.ok) setPreview(await r.text());
@@ -87,7 +92,7 @@ export default function AdminPage() {
       clearTimeout(t);
       ctrl.abort();
     };
-  }, [titulo, cuerpo]);
+  }, [titulo, cuerpo, imagen]);
 
   // La lista se pide al abrir la pestaña y cada vez que cambia el segmento,
   // para que siempre muestre justo a quien le llegaría la campaña.
@@ -149,13 +154,36 @@ export default function AdminPage() {
     const r = await fetch("/api/admin/probar", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ titulo, cuerpo, destino }),
+      body: JSON.stringify({ titulo, cuerpo, destino, imagen }),
     });
     const d = await r.json();
     setOcupado(false);
     if (!r.ok) return setEstado({ tipo: "error", texto: d.error ?? "No se pudo enviar la prueba." });
     setProbado(true);
     setEstado({ tipo: "ok", texto: `Prueba enviada a ${destino}. Revísala antes de enviar a todos.` });
+  }
+
+  async function subirImagen(archivo: File) {
+    setSubiendo(true);
+    setEstado(null);
+    try {
+      // Se reduce antes de subir: una foto de teléfono son varios megas y la
+      // plantilla mide 560px, así que el original no aporta nada.
+      const listo = await reducirImagen(archivo);
+      const form = new FormData();
+      form.append("archivo", listo);
+      const r = await fetch("/api/admin/imagen", { method: "POST", body: form });
+      const d = await r.json();
+      if (!r.ok) {
+        setEstado({ tipo: "error", texto: d.error ?? "No se pudo subir la imagen." });
+        return;
+      }
+      setImagen(d.url);
+    } catch {
+      setEstado({ tipo: "error", texto: "No se pudo subir la imagen." });
+    } finally {
+      setSubiendo(false);
+    }
   }
 
   async function enviar() {
@@ -166,7 +194,7 @@ export default function AdminPage() {
     const r = await fetch("/api/admin/enviar", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ titulo, cuerpo, segmentId, confirmacion: "ENVIAR" }),
+      body: JSON.stringify({ titulo, cuerpo, segmentId, confirmacion: "ENVIAR", imagen }),
     });
     const d = await r.json();
     setOcupado(false);
@@ -174,6 +202,7 @@ export default function AdminPage() {
     setEstado({ tipo: "ok", texto: "Campaña enviada. Las métricas se ven en Resend." });
     setTitulo("");
     setCuerpo("");
+    setImagen("");
     setProbado(false);
   }
 
@@ -265,6 +294,37 @@ export default function AdminPage() {
               <span className="text-[13px] font-semibold text-white/70">Título (también es el asunto)</span>
               <input value={titulo} onChange={(e) => setTitulo(e.target.value)} className={campo} placeholder="Nuevos artistas en BROCHA" />
             </label>
+
+            <div className={`flex-col gap-2 ${imagenesOn ? "flex" : "hidden"}`}>
+              <span className="text-[13px] font-semibold text-white/70">Imagen de cabecera (opcional)</span>
+              {imagen ? (
+                <div className="flex items-center gap-3">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={imagen} alt="" className="h-14 w-24 rounded-[8px] object-cover" />
+                  <button
+                    onClick={() => setImagen("")}
+                    className="text-[13px] text-white/60 underline"
+                  >
+                    Quitar
+                  </button>
+                </div>
+              ) : (
+                <input
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp,image/gif"
+                  disabled={subiendo}
+                  onChange={(e) => {
+                    const f = e.target.files?.[0];
+                    // Se limpia el input para poder reintentar el mismo archivo
+                    // si la subida falla.
+                    e.target.value = "";
+                    if (f) void subirImagen(f);
+                  }}
+                  className={`${campo} file:mr-3 file:rounded-[8px] file:border-0 file:bg-white/15 file:px-3 file:py-1.5 file:text-[13px] file:text-white`}
+                />
+              )}
+              {subiendo && <span className="text-[12px] text-white/50">Subiendo…</span>}
+            </div>
 
             <label className="flex flex-col gap-2">
               <span className="text-[13px] font-semibold text-white/70">Texto</span>

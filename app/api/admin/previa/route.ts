@@ -2,21 +2,27 @@ import { NextResponse } from "next/server";
 import { exigirSesion } from "@/lib/admin-guard";
 import { campanaHtml } from "@/lib/email-campana";
 
+/** Solo se acepta https: la URL sale de nuestra subida, pero no cuesta cerrarlo. */
+function imagenValida(v: unknown): string | undefined {
+  return typeof v === "string" && v.startsWith("https://") ? v : undefined;
+}
+
 /** Devuelve el correo renderizado, para mostrarlo en la vista previa. */
 export async function POST(request: Request) {
   const bloqueo = await exigirSesion();
   if (bloqueo) return bloqueo;
 
-  const { titulo, cuerpo } = (await request.json().catch(() => ({}))) as {
+  const { titulo, cuerpo, imagen } = (await request.json().catch(() => ({}))) as {
     titulo?: string;
     cuerpo?: string;
+    imagen?: string;
   };
   if (!titulo?.trim() || !cuerpo?.trim()) {
     return NextResponse.json({ error: "Falta contenido." }, { status: 400 });
   }
 
   // En la previa el marcador de baja no aplica; se apunta al sitio.
-  const html = campanaHtml(titulo.trim(), cuerpo).replaceAll(
+  const html = campanaHtml(titulo.trim(), cuerpo, imagenValida(imagen)).replaceAll(
     "{{{RESEND_UNSUBSCRIBE_URL}}}",
     "https://www.brocha.art",
   );
