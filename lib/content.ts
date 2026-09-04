@@ -284,25 +284,37 @@ export const perfiles = {
   ],
 } as const;
 
+/** Cada galería trae portada + 9 fotos, numeradas del 01 al 10. */
+function fotosDe(slug: string, cuantas = 10): string[] {
+  return Array.from(
+    { length: cuantas },
+    (_, i) => `/images/eventos/${slug}/${slug}-${String(i + 1).padStart(2, "0")}.webp`,
+  );
+}
+
 export const eventos = {
   eyebrow: "Eventos que hemos realizado",
   title: ["El arte fuera de", "la galeria"],
   items: [
     {
-      title: "Brocha Viva",
-      image: "/images/evento-brocha-viva.webp",
-      // Del Figma solo salió esta foto. Al agregar más al arreglo, el visor
-      // muestra las flechas y el contador automáticamente.
-      photos: ["/images/evento-brocha-viva.webp"],
+      title: "Brocha Viva Colombia",
+      image: "/images/evento-brocha-viva-colombia.webp",
+      photos: fotosDe("brocha-viva-colombia"),
+    },
+    {
+      title: "Brocha Viva Italia",
+      image: "/images/evento-brocha-viva-italia.webp",
+      photos: fotosDe("brocha-viva-italia"),
+    },
+    {
+      title: "Brocha Viva Colectiva",
+      image: "/images/evento-brocha-viva-colectiva.webp",
+      photos: fotosDe("brocha-viva-colectiva"),
     },
     {
       title: "Brocha SubPop",
-      subtitle: "Lima, Perú",
-      image: "/images/evento-subpop.webp",
-      photos: Array.from(
-        { length: 12 },
-        (_, i) => `/images/eventos/subpop/subpop-${String(i + 1).padStart(2, "0")}.webp`,
-      ),
+      image: "/images/evento-brocha-subpop.webp",
+      photos: fotosDe("brocha-subpop"),
     },
   ],
 } as const;
